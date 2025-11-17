@@ -10,7 +10,7 @@ function App() {
   if (!isInitialized) return <div>Loading...</div>;
 
   return (
-    <Router>
+    <Router basename="/PreCode">
       <Routes>
         <Route path="/" element={user ? <Navigate to="/form" /> : <LandingPage />} /> 
         <Route path="/docs" element={<ApiDocs />} /> 
