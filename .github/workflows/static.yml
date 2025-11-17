@@ -17,31 +17,29 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    # Configuración: Todos los comandos 'run' se ejecutarán dentro de 'frontend'
-    defaults:
-      run:
-        working-directory: frontend
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
         
-      - name: Set up Node
+      - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20' # Mantener la versión consistente
+          node-version: '20' 
           
-      - name: Install dependencies
-        run: npm install
+      # 1. Instalar dependencias y compilar
+      - name: Install dependencies and Build
+        run: |
+          # Cambiar al directorio del frontend para instalar y compilar
+          cd frontend
+          npm install
+          npm run build
           
-      # El resultado 'dist' se crea en la raíz del 'working-directory' (frontend/dist)
-      - name: Build project
-        run: npm run build
-          
-      # Subimos el artefacto. La ruta es 'dist' porque estamos en 'frontend'
-      - name: Upload artifact
+      # 2. Subir el artefacto de producción
+      - name: Upload production artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: 'dist' 
+          # CORRECCIÓN DE RUTA: Apuntamos a la ubicación exacta de la carpeta 'dist'
+          path: 'frontend/dist' 
 
   deploy:
     environment:
