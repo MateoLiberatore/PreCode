@@ -14,19 +14,28 @@ app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
 
 CORS(
     app,
-    resources={r"/api/*": {
-        "origins": [
-            "http://localhost:5173",
-            "http://127.0.0.1:5173",
-            "http://frontend:5173",
-            "https://mateoliberatore.github.io"
-        ]
-    }},
+    origins=[
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+        "https://mateoliberatore.github.io"
+    ],
     supports_credentials=True,
-    expose_headers=["Authorization"],
+    allow_headers=["Content-Type", "Authorization"],
+    methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    expose_headers=["Authorization"]
 )
 
 db_generation()
+
+#pythonAnywhere headers fix
+
+@app.after_request
+def apply_cors(response):
+    response.headers["Access-Control-Allow-Origin"] = "https://mateoliberatore.github.io"
+    response.headers["Access-Control-Allow-Credentials"] = "true"
+    response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
+    response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS"
+    return response
 
 app.register_blueprint(auth_bp, url_prefix="/api/v1/auth")
 app.register_blueprint(gemini_bp, url_prefix="/api/v1/gemini")
